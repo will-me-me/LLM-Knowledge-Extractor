@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database setup
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL","postgresql://myroot:root@localhost/mydatabase")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL","postgresql://myroot:root@postgres/mydatabase")
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # Create tables
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
