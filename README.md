@@ -29,6 +29,7 @@ A prototype application that uses Claude AI to extract summaries and structured 
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd llm-knowledge-extractor
@@ -36,11 +37,13 @@ A prototype application that uses Claude AI to extract summaries and structured 
 
 2. **Set up environment variables**
    Create a `.env` file in the root directory:
+
    ```bash
    ANTHROPIC_API_KEY=your_anthropic_api_key_here
    ```
 
 3. **Project Structure**
+
    ```
    llm-knowledge-extractor/
    ├── backend/
@@ -61,8 +64,10 @@ A prototype application that uses Claude AI to extract summaries and structured 
    ```
 
 4. **Run with Docker Compose**
+
    ```bash
-   docker-compose up -d
+   docker compose -f docker-compose-local.yml up --build
+
    ```
 
 5. **Access the application**
@@ -75,27 +80,32 @@ A prototype application that uses Claude AI to extract summaries and structured 
 ### Backend Setup
 
 1. **Navigate to backend directory**
+
    ```bash
    cd backend
    ```
 
 2. **Create virtual environment**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Set up PostgreSQL**
+
    - Install PostgreSQL locally
    - Create database: `knowledge_extractor`
    - Update database URL in `main.py` if needed
 
 5. **Set environment variable**
+
    ```bash
    export ANTHROPIC_API_KEY=your_api_key_here
    ```
@@ -108,11 +118,13 @@ A prototype application that uses Claude AI to extract summaries and structured 
 ### Frontend Setup
 
 1. **Navigate to frontend directory**
+
    ```bash
    cd frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -125,9 +137,11 @@ A prototype application that uses Claude AI to extract summaries and structured 
 ## API Endpoints
 
 ### POST /api/extract
+
 Extract knowledge from text using Claude AI.
 
 **Request Body:**
+
 ```json
 {
   "text": "Your text content here..."
@@ -135,6 +149,7 @@ Extract knowledge from text using Claude AI.
 ```
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -153,26 +168,33 @@ Extract knowledge from text using Claude AI.
 ```
 
 ### GET /api/extractions
+
 Get all extractions (latest 50).
 
 ### GET /api/extractions/{id}
+
 Get a specific extraction by ID.
 
 ### DELETE /api/extractions/{id}
+
 Delete an extraction by ID.
 
 ### GET /health
+
 Health check endpoint.
 
 ## Features in Detail
 
 ### Text Analysis
+
 - Paste any text content into the input field
 - Click "Extract with Claude" to analyze
 - Get instant AI-powered insights
 
 ### Structured Data Extraction
+
 The system extracts:
+
 - **Key Entities**: Important people, places, organizations
 - **Main Topics**: 3-5 primary themes or subjects
 - **Sentiment**: Overall emotional tone (positive, negative, neutral)
@@ -181,12 +203,14 @@ The system extracts:
 - **Categories**: Suggested content categories
 
 ### History Management
+
 - View all previous extractions in a sortable table
 - Search and filter through extraction history
 - Delete unwanted extractions
 - View detailed results in expandable panels
 
 ### User Interface
+
 - **Responsive Design**: Works on desktop and mobile
 - **Dark/Light Theme**: Toggle between themes
 - **Real-time Feedback**: Loading states and notifications
@@ -196,18 +220,21 @@ The system extracts:
 ## Architecture
 
 ### Backend (FastAPI)
+
 - **FastAPI**: Modern, fast web framework for building APIs
 - **SQLAlchemy**: SQL toolkit and ORM for database operations
 - **PostgreSQL**: Robust relational database for data persistence
 - **Anthropic SDK**: Official SDK for Claude AI integration
 
 ### Frontend (Nuxt.js + Vuetify)
+
 - **Nuxt.js 3**: Vue.js framework for production-ready applications
 - **Vue 3**: Progressive JavaScript framework with Composition API
 - **Vuetify 3**: Material Design component framework
 - **Pinia**: State management for Vue applications
 
 ### Database Schema
+
 ```sql
 CREATE TABLE extractions (
     id SERIAL PRIMARY KEY,
@@ -220,13 +247,26 @@ CREATE TABLE extractions (
 
 ## Environment Variables
 
+### Backend Environment Variables
+
 - `ANTHROPIC_API_KEY`: Your Anthropic API key (required)
-- `API_BASE_URL`: Backend API URL for frontend (default: http://localhost:8000)
+- `FRONTEND_URL`: Frontend URL for CORS (default: http://localhost:3000)
 - `DATABASE_URL`: PostgreSQL connection string
+
+### Frontend Environment Variables
+
+- `API_BASE_URL`: Backend API URL (default: http://localhost:8000)
+
+### Docker Environment Variables
+
+- `POSTGRES_DB`: PostgreSQL database name
+- `POSTGRES_USER`: PostgreSQL username
+- `POSTGRES_PASSWORD`: PostgreSQL password
 
 ## Error Handling
 
 The application includes comprehensive error handling:
+
 - API request failures with user-friendly messages
 - Database connection issues
 - Claude API rate limiting and errors
@@ -261,11 +301,13 @@ The application includes comprehensive error handling:
 ### Common Issues
 
 1. **Claude API Errors**
+
    - Verify your API key is correct
    - Check your API usage limits
    - Ensure network connectivity
 
 2. **Database Connection Issues**
+
    - Verify PostgreSQL is running
    - Check database credentials
    - Ensure database exists
@@ -296,6 +338,7 @@ This project is for demonstration purposes. Please respect the terms of service 
 ## Support
 
 For issues and questions:
+
 - Check the troubleshooting section
 - Review API documentation
 - Create an issue in the repository
