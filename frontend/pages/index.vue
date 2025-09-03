@@ -103,7 +103,7 @@
         <v-row>
           <v-col cols="12">
             <v-card>
-              <v-card-title>
+              <v-card-title class="d-flex">
                 <v-icon left>mdi-history</v-icon>
                 Extraction History
                 <v-spacer></v-spacer>
@@ -138,6 +138,7 @@
                   <v-icon>mdi-refresh</v-icon>
                 </v-btn>
               </v-card-title>
+              <v-divider class="mx-4"></v-divider>
 
               <!-- Search and Filters -->
               <v-card-text>
@@ -279,7 +280,7 @@
     <!-- View Extraction Dialog -->
     <v-dialog v-model="viewDialog" max-width="800px">
       <v-card v-if="selectedExtraction">
-        <v-card-title>
+        <v-card-title class="d-flex">
           Extraction Details
           <v-spacer></v-spacer>
           <v-btn @click="viewDialog = false" icon variant="text">
