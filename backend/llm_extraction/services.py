@@ -16,6 +16,7 @@ import json
 import uuid
 from dotenv import load_dotenv
 
+import config
 from database import SessionLocal
 
 
@@ -30,7 +31,7 @@ def get_db():
 async def extract_knowledge_with_claude(text: str) -> Dict[str, Any]:
     """Use Claude to extract summary and structured data from text"""
 
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = config.get_settings().ANTHROPIC_API_KEY
     if not api_key:
         raise ValueError("Anthropic API key is not set in environment variables.")
     
