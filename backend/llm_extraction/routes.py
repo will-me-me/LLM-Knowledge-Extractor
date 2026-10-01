@@ -8,6 +8,7 @@ from typing import Optional
 import uuid
 
 
+import config
 from llm_extraction.model import ExtractionResponse, TextInput
 from llm_extraction.schema import ExtractionRecord
 import llm_extraction.services as llm_services
@@ -15,8 +16,17 @@ import llm_extraction.services as llm_services
 
 
 
+
 router = APIRouter()
 
+@router.get("/info")
+async def info(settings: config.Settings = Depends(config.get_settings)):
+    return {
+        "ANTHROPIC_API_KEY": settings.ANTHROPIC_API_KEY,
+        "DATABASE_URL": settings.DATABASE_URL,
+        "FRONTEND_URL": settings.FRONTEND_URL,
+
+    }
 
 @router.post("/api/extract", response_model=ExtractionResponse)
 async def extract_knowledge(
@@ -53,39 +63,6 @@ async def get_extractions(db: Session = Depends(llm_services.get_db)):
         for ext in extractions
     ]
 
-@router.get("/api/extractions/{extraction_id}")
-async def get_extraction(extraction_id: str, db: Session = Depends(llm_services.get_db)):
-    """Get a specific extraction by ID"""
-    try:
-      
-        uui_d_obj = uuid.UUID(str(extraction_id))
-      
-    except ValueError:
-      raise HTTPException(status_code=400, detail="Invalid extraction ID format")
-    extraction = db.query(ExtractionRecord).filter(ExtractionRecord.id == uui_d_obj).first()
-    
-    if not extraction:
-        raise HTTPException(status_code=404, detail="Extraction not found")
-    
-    return ExtractionResponse.from_orm_with_uuid_conversion(extraction)
-
-@router.delete("/api/extractions/{extraction_id}")
-async def delete_extraction(extraction_id: str, db: Session = Depends(llm_services.get_db)):
-    """Delete an extraction"""
-    try:
-        uui_d_obj = uuid.UUID(str(extraction_id))
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid extraction ID format")
-    extraction = db.query(ExtractionRecord).filter(ExtractionRecord.id == uui_d_obj).first()
-    
-    if not extraction:
-        raise HTTPException(status_code=404, detail="Extraction not found")
-    
-    db.delete(extraction)
-    db.commit()
-    
-    return {"message": "Extraction deleted successfully"}
-
 @router.get("/api/extractions/search")
 async def search_extractions(
     keyword: Optional[str] = None,
@@ -100,6 +77,16 @@ async def search_extractions(
 ):
     """Search and filter extractions based on various criteria"""
     
+    print("search_extractions called with filters:", {
+        "keyword": keyword,
+        "sentiment": sentiment,
+        "category": category,
+        "entity": entity,
+        "topic": topic,
+        "date_from": date_from,
+        "date_to": date_to,
+        "limit": limit
+    })
     # Start with base query
     query = db.query(ExtractionRecord)
     
@@ -150,9 +137,10 @@ async def search_extractions(
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid date_to format. Use ISO format (YYYY-MM-DDTHH:MM:SS)")
     
+    print("about to execute query with filters:")
     # Apply ordering and limit
     extractions = query.order_by(ExtractionRecord.created_at.desc()).limit(min(limit, 100)).all()
-    
+    print(extractions)
     return {
         "results": [
             ExtractionResponse.from_orm_with_uuid_conversion(ext)
@@ -170,6 +158,42 @@ async def search_extractions(
             "limit": limit
         }
     }
+
+
+@router.get("/api/extractions/{extraction_id}")
+async def get_extraction(extraction_id: str, db: Session = Depends(llm_services.get_db)):
+    """Get a specific extraction by ID"""
+    try:
+      
+        uui_d_obj = uuid.UUID(str(extraction_id))
+      
+    except ValueError:
+      raise HTTPException(status_code=400, detail="Invalid extraction ID format")
+    extraction = db.query(ExtractionRecord).filter(ExtractionRecord.id == uui_d_obj).first()
+    
+    if not extraction:
+        raise HTTPException(status_code=404, detail="Extraction not found")
+    
+    return ExtractionResponse.from_orm_with_uuid_conversion(extraction)
+
+
+@router.delete("/api/extractions/{extraction_id}")
+async def delete_extraction(extraction_id: str, db: Session = Depends(llm_services.get_db)):
+    """Delete an extraction"""
+    try:
+        uui_d_obj = uuid.UUID(str(extraction_id))
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid extraction ID format")
+    extraction = db.query(ExtractionRecord).filter(ExtractionRecord.id == uui_d_obj).first()
+    
+    if not extraction:
+        raise HTTPException(status_code=404, detail="Extraction not found")
+    
+    db.delete(extraction)
+    db.commit()
+    
+    return {"message": "Extraction deleted successfully"}
+
 
 @router.get("/api/filters/sentiments")
 def get_sentiments(db: Session = Depends(llm_services.get_db)):
