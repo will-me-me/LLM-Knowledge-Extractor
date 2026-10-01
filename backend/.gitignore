@@ -1,2 +1,19 @@
 # Virtual environment
 .env
+__pycache__/
+*.py[cod]
+*.so
+venv/
+.venv/
+env/
+.env
+.env.*
+!.env.example
+*.lock
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.DS_Store
